@@ -1,9 +1,9 @@
 # Chief of Staff
 
-A Codex skill that coordinates work for you. It assigns tasks to other agents, checks their results, and cleans up when finished.
+A Codex skill that uses a capable model to plan and review work, and more cost-efficient agents to carry out its detailed instructions.
 
 1. Install [Codex](https://developers.openai.com/codex/cli), [Herdr](https://herdr.dev), [Worktrunk](https://worktrunk.dev), and [Hunk](https://www.hunk.dev).
-2. Open your project in Herdr and start Codex. Choose **GPT-6 Astra** with **max** reasoning.
+2. Open your project in Herdr and start Codex. Choose a capable model with high reasoning. For example, **Astra at max** coordinates **Sol workers at medium**.
 3. Paste this into Codex:
 
    > Install the chief-of-staff skill from https://github.com/romanenko/chief-of-staff. Also install Herdr’s skill if needed.
