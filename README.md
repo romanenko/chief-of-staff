@@ -2,7 +2,7 @@
 
 A simple Codex skill implementing the **coordinator pattern**: one agent plans and reviews, while other agents make the changes.
 
-Ideally, the chief uses a smart model with high reasoning effort. It gives workers detailed plans and chooses capable, faster, more cost-efficient models to carry them out.
+The chief gives workers detailed plans and reviews their results. Defaults are Astra with medium reasoning for the chief and faster, more cost-efficient Sol with medium reasoning for workers. They communicate directly through Codex; Herdr organizes their workspaces and reviews.
 
 ## Install
 
