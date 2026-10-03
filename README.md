@@ -2,7 +2,7 @@
 
 An agent skill implementing the **coordinator pattern**: one agent plans and reviews, while other agents make the changes.
 
-The chief gives workers detailed plans and reviews their results. Defaults are Astra with medium reasoning for the chief and faster, more cost-efficient Sol with medium reasoning for workers. Pi workers communicate through [pi-intercom](https://pi.dev/packages/pi-intercom); Herdr organizes their workspaces and reviews, and Worktrunk isolates each task. Explicitly requested non-Pi workers use a supported messaging fallback.
+The chief gives workers detailed plans and reviews their results. Defaults are `openai/gpt-6-astra` with medium reasoning for the chief and `openai/gpt-6.1-sol` with medium reasoning for workers. Pi workers communicate through [pi-intercom](https://pi.dev/packages/pi-intercom); Herdr organizes their workspaces and reviews, and Worktrunk isolates each task. Explicitly requested non-Pi workers use a supported messaging fallback.
 
 ## Install
 
