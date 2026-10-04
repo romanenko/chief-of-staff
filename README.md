@@ -28,6 +28,8 @@ To start in Pi:
 
 The chief discovers connected workers, sends detailed task plans, answers blocking questions with threaded replies, and verifies their results. Workers send progress and completion asynchronously; delivery alone never proves completion. See [the coordination protocol](references/intercom-coordination.md) for targeting, timeout/cancellation handling, handovers, subagent escalation, and non-Pi fallbacks.
 
+Every worker workspace is opened with `herdr worktree open --workspace <chief-workspace-id> --path <worktree-path> --label "<task>" --no-focus` after Worktrunk creates the worktree. This registers repository metadata so Herdr’s Spaces view groups workers under the main repository workspace, rather than showing unrelated flat workspaces. Worktrunk still owns worktree creation/removal; Herdr owns the visible layout. The chief verifies grouping before launch and preserves user focus. This is repository/worktree grouping, not an agent parent-child relationship.
+
 High-risk changes still require [annotated Hunk review](references/hunk-handoff.md) and user approval before integration. Worktree ownership, isolation, and safe cleanup are unchanged.
 
 Codex remains supported when explicitly selected; invoke the skill there with `$chief-of-staff` and use the documented fallback rather than assuming Codex has the Pi intercom tool.
