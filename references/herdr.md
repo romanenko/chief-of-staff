@@ -18,7 +18,7 @@ Read the installed Herdr skill and current CLI help. Read the Hunk skill returne
 
 Use explicit pane/session IDs or `--current`, parse returned JSON, preserve user focus with `--no-focus`, and record assignment ownership of created resources. Do not close unrelated panes/workspaces, restart a shared daemon, or terminate the host without explicit authorization.
 
-For isolated work, use the approved worktree manager and repository setup hooks. Herdr provides terminal layout; it does not replace working-state ownership, review requirements, or approval gates in `operations.md`.
+For isolated work in this hosted workflow, require the [Herdr Worktrunk plugin](https://github.com/devashish2203/herdr-worktrunk) and repository setup hooks. Use its Worktrunk-backed actions for checkout creation/switching and authorized removal/merge; do not substitute Herdr's built-in worktree creation/removal. Herdr provides terminal layout; the plugin does not replace ownership, review requirements, or approval gates in `operations.md`.
 
 ## Hosted worker threads
 
@@ -32,31 +32,56 @@ Native messaging remains preferred. Hosted terminal delivery is not acknowledgem
 
 Before delivery, inspect `herdr agent read <name> --source visible`. Protect actual pending human text; UI suggestions are not user input. On a blocked dialog, inspect recent unwrapped output and ask the user before answering. Rediscover identity after a lost connection; do not assume an error means the worker stopped.
 
-## Group worker workspaces in Spaces
+## Required Worktrunk plugin and nested Spaces
 
-For assignments using separate worktrees, register each existing worker checkout through `herdr worktree open`. This restores the proven workflow from commit `59fd184`: Spaces groups worker workspaces beneath the repository's main workspace instead of displaying unrelated flat spaces. This is **repository/worktree grouping**, not an agent parent-child relationship or a messaging hierarchy; it applies equally to Pi, Claude, and Codex workers.
+Use [devashish2203/herdr-worktrunk](https://github.com/devashish2203/herdr-worktrunk) for the Herdr worktree workflow. Its default `open_mode = "workspace"` runs Worktrunk to create/switch the checkout and execute lifecycle hooks, then registers the checkout through `herdr worktree open`. Spaces displays nested worktree workspaces beneath the repository's main workspace. This is **repository/worktree grouping**, not an agent parent-child or messaging hierarchy; it applies to Pi, Claude, and Codex workers.
 
-1. Let the approved worktree manager create the checkout and run setup hooks first. Worktrunk, when selected, still owns creation/removal; do not use `herdr worktree create` as a substitute.
-2. Resolve the Chief/main workspace from `herdr pane current --current` and the live workspace list, never UI focus. Inspect `herdr worktree open --help` and the installed worktree command group before applying this procedure.
-3. Open the existing checkout under that repository context, preserving focus:
+### Prerequisites and configuration
+
+Read the installed plugin README and Herdr plugin CLI help; inspect `herdr plugin action list`. Upstream requires Herdr ≥ 0.7.0, Worktrunk ≥ 0.60.0 (`wt` on PATH), `fzf`, `jq`, and Bash on macOS/Linux. Verify these and the installed plugin before starting isolated hosted work. If missing, report the blocker and request authorization to install; do not silently bypass it or upgrade shared tools.
+
+```bash
+# Only with installation authorization:
+herdr plugin install devashish2203/herdr-worktrunk
+# Inspect the managed config location:
+herdr plugin config-dir worktrunk
+```
+
+Require workspace presentation for this workflow. Inspect `config.toml` in the returned directory: absent `open_mode` defaults to `"workspace"`; if it is `"tab"`, request approval to change it to `"workspace"`. Do not silently edit global configuration or keybindings. Tab mode does not provide the required nested Spaces layout and additionally needs Worktrunk shell integration. Plugin config is read on each picker invocation; no reinstall/restart is needed. Inspect `merge_flags` before any merge: options such as `--no-hooks` or automatic staging must not bypass repository requirements or include unrelated work.
+
+### Create/switch and verify
+
+1. Resolve the Chief/main workspace from `herdr pane current --current` and live workspace state, never UI focus. Verify repository, source branch/base, and hook approvals before invoking an action in that repository context. Use installed targeting syntax; do not invent a branch or workspace argument.
+2. Invoke the appropriate plugin action:
 
    ```bash
-   herdr worktree open --workspace <chief-workspace-id> --path <worktree-path> --label "<task>" --no-focus
+   herdr plugin action invoke open --plugin worktrunk
+   herdr plugin action invoke open-current --plugin worktrunk
+   herdr plugin action invoke open-with-remotes --plugin worktrunk
    ```
 
-4. Parse `.result.workspace` and `.result.root_pane`. If the response reports `already_open`, inspect and reuse the existing workspace; do not launch over an occupied pane or claim ownership of reused resources.
-5. Before starting the worker, verify with `herdr workspace list` and `herdr worktree list --workspace <chief-workspace-id>` that main and worker share `worktree.repo_key`, the worker has `is_linked_worktree: true`, and its checkout path matches the assigned worktree. Record returned IDs, path, repository key, and resource ownership in the assignment registry.
-6. If the main workspace lacks repository metadata, register/reuse the main checkout using the installed syntax:
+   `open` creates typed new names from Worktrunk's default base; `open-current` uses the current branch (`--base @`); `open-with-remotes` includes remote-tracking branches. Refresh remote state only when authorized/needed. These actions open an **interactive fzf picker**, not a noninteractive assignment API. Inspect the picker before input, preserve human drafts, and use a supported terminal adapter or ask the user to select/type the intended branch. `Enter` selects a match; `Alt+Enter` forces a typed new name when it fuzzy-matches an existing branch. Action-launch success is not checkout readiness.
+3. Inspect Worktrunk/hook completion and discover the actual checkout path and workspace/root-pane IDs from live state; do not predict them. A failure keeps the picker pane open. `hold_on_create`/`hold_on_success` can retain successful hook output, but changing those settings requires authorization. Verify setup independently when output has disappeared.
+4. Before launching the worker, inspect `herdr workspace list` and `herdr worktree list --workspace <chief-workspace-id>`. Main and worker must share `worktree.repo_key`; the worker must have `is_linked_worktree: true` and the assigned checkout path. Record branch/base, IDs, path, hook evidence, and resource ownership. Reuse an existing space only after inspecting its occupant; do not launch over an occupied pane or claim ownership of reused resources.
+5. If main metadata is missing, inspect installed help and register/reuse the main checkout with `herdr worktree open --cwd <repo> --path <repo> --no-focus`, then rediscover IDs and verify grouping. Explicit registration of an existing checkout is a layout repair, not a replacement for the required plugin lifecycle. If grouping cannot be verified, stop and report the blocker; do not fall back to flat workspaces or restart Herdr.
 
-   ```bash
-   herdr worktree open --cwd <repo> --path <repo> --no-focus
-   ```
+Do not substitute plain `workspace create`, messaging auto-creation, built-in `herdr worktree create/remove`, or a hand-rolled `wt` lifecycle for the plugin workflow. Plain workspaces remain appropriate for explicitly requested unrelated topology. Worker communication and supervision remain independent of Spaces presentation. Preserve user focus where supported; picker actions may require interaction/focus, so do not promise they are background `--no-focus` operations.
 
-   Rediscover the main workspace/pane IDs and verify grouping again before launching workers. If the installed CLI/server cannot support registration, stop and report the blocker; do not silently fall back to flat workspaces, upgrade, or restart Herdr.
+### Authorized merge/removal and recovery
 
-Do not use plain `workspace create` or messaging auto-creation for these worker workspaces: they can omit the repository metadata needed for grouping. Plain workspaces remain appropriate for explicitly requested unrelated topology. Worker identity, native communication, check-ins, and approval gates remain independent of Spaces presentation.
+After shared acceptance, permission, dependency, and dirty/unmerged-work guards pass, use the plugin's installed actions:
 
-During recovery, reconcile existing grouped workspaces and live workers before opening replacements. During cleanup, close only the assignment-owned worker workspace after guarded worker/worktree disposal. **Never use `workspace close --group`** for task cleanup: it can affect the Chief/main workspace and sibling workers. A reused workspace is not a resource this assignment created.
+```bash
+herdr plugin action invoke remove --plugin worktrunk
+herdr plugin action invoke merge --plugin worktrunk
+herdr plugin action invoke merge-no-squash --plugin worktrunk
+```
+
+Inspect the manifest/action list before use. Merge actions run `wt merge` and removal; the no-squash variant preserves commits. They are **not** substitutes for PR protections, current-head checks, or merge authorization. Do not invoke merge merely to clean up an already merged PR. Stop the worker and owned processes before removal, verify the selected checkout, and never accept destructive prompts on the user's behalf without delegated authority. Worktrunk confirmation is not permission to discard unknown work.
+
+The plugin closes associated native workspaces or legacy tab panes after successful removal; failed merge/removal retains work and UI. Verify hook results, checkout/branch disposition, and UI cleanup before declaring completion. Do not redundantly close a space already removed by the plugin. Never use `workspace close --group`: it can affect the Chief and siblings. Reused resources require explicit management authority.
+
+On recovery, reconcile Worktrunk checkouts, grouped spaces, workers, and partially completed actions before invoking anything again. Do not duplicate an ambiguous create, merge, or removal; inspect first. Keep all general cleanup and approval guards in force.
 
 ## Hunk review and annotations
 
