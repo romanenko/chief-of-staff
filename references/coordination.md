@@ -30,7 +30,7 @@ Require workers to send unsolicited reports on milestone completion, scope chang
 
 ## PR supervision until main
 
-Start a PR monitor as soon as the worker returns its PR URL. Keep the worker available for fixes. Obtain an initial snapshot and reconcile it on every update, including events posted before monitoring began.
+Start a PR monitor as soon as the worker returns its PR URL. When available, use [gh-observer](gh-observer.md) for the terminal PR/Actions watch component; it does not replace the complete event coverage below. Keep the worker available for fixes. Obtain an initial snapshot and reconcile it on every update, including events posted before monitoring began.
 
 Collect all pages of:
 

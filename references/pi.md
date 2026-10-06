@@ -99,7 +99,7 @@ The monitor script may schedule intervals internally; the Chief must not sleep, 
 
 On PR creation, start a Chief-owned managed monitor named `chief-pr-<task-id>` using a tested GitHub monitor command implementing the shared pagination/cursor contract. Use repeatable task-specific event markers such as `CHIEF_PR_EVENT <task-id>` and failure markers, with `on: "turn"`. Retain the worker's separate check-in process through PR revisions.
 
-`gh pr checks <n> --watch` is useful as an additional CI-only process, not a replacement for comment/review/full-run monitoring. Persist snapshot/cursor state outside the disposable worktree. Do not claim monitoring is active until the command runs successfully and its wake-up path is verified. This reference specifies behavior; it does not itself install a monitor script.
+When installed and a PTY-capable supervisor is available, prefer [gh-observer](gh-observer.md) for PR/Actions watching; do not assume `process start` provides a PTY. `gh pr checks <n> --watch` is useful as an additional CI-only process, not a replacement for comment/review/full-run monitoring. Persist snapshot/cursor state outside the disposable worktree. Do not claim monitoring is active until the command runs successfully and its wake-up path is verified. This reference specifies behavior; it does not itself install a monitor script.
 
 Use `process output` for targeted diagnosis and `read` on returned stdout/stderr paths for deep logs. Change noisy watches with `process update`, not a restart. Failures must remain visible; do not suppress them as successful empty snapshots.
 

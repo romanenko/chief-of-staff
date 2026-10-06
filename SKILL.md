@@ -37,4 +37,6 @@ Choose by the Chief's **Harness**, not its model/provider; read the matching com
 
 For mixed-Harness workers, read their reference too and verify the bridge.
 
+For terminal-based PR/Actions watching, consult [gh-observer](references/gh-observer.md) when the extension is available. It is optional and independent of Herdr; verify PTY supervision and supplement its CI-only coverage with the shared PR-event monitoring contract.
+
 Read [coordination details](references/coordination.md) for registry, check-in, PR-monitoring, recovery, and cleanup specifics. Consult [operational procedures](references/operations.md) before applicable setup, review, shipping, or disposal actions; it contains generic execution safeguards, risk assessment, approval policy, and dependency handling. Resolve references relative to this skill directory.

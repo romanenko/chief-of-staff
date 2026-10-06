@@ -2,7 +2,7 @@
 
 An agent skill for the **coordinator pattern**: a Chief scopes and delegates work, supervises independent worker threads, reviews evidence, shepherds artifacts into the target branch, and disposes of accepted or rejected work.
 
-The workflow is Harness-neutral. Pi, Claude, and Codex have separate communication references. Optional terminal hosting and annotated review are isolated from those Harness instructions.
+The workflow is Harness-neutral. Pi, Claude, and Codex have separate communication references. Optional terminal hosting, annotated review, and gh-observer PR/Actions watching are isolated in separate references, loaded only when applicable and available.
 
 ## Install
 
@@ -24,6 +24,7 @@ For other Harnesses, follow their installed skill-loading interface. Do not assu
 - [Pi](references/pi.md): intercom, managed background processes, codemode composition/parallelism, and TypeSafe/Jev classification.
 - [Claude](references/claude.md): capability-aware native delegation, messaging, and lifecycle controls.
 - [Codex](references/codex.md): capability-aware native delegation, messaging, and lifecycle controls.
+- [gh-observer](references/gh-observer.md): optional terminal/PTY PR and Actions watcher, supervisor requirements, current-head verification, and coverage limits; use when available, with or without Herdr.
 - [Terminal hosting](references/herdr.md): optional hosted coordination and annotated review, loaded only when the main skill's hosting check succeeds.
 
 ## Capabilities and limits
