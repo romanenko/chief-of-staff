@@ -1,6 +1,7 @@
 ---
 name: chief-of-staff
-description: Coordinate worker agents through their full thread lifecycle: scope, delegate, supervise, review, shepherd artifacts into main or reject them, and clean up. Use when asked to act as chief of staff, coordinate work, deploy agents, delegate tasks, or manage a batch of assignments. Supports Pi, Claude Code, and Codex Harnesses through references.
+description: >-
+  Coordinate worker agents through their full thread lifecycle: scope, delegate, supervise, review, shepherd artifacts into main or reject them, and clean up. Use when asked to act as chief of staff, coordinate work, deploy agents, delegate tasks, or manage a batch of assignments. Supports Pi, Claude Code, and Codex Harnesses through references.
 ---
 
 # Chief of Staff
