@@ -14,7 +14,15 @@ When available, discover current addresses with `ListAgents`, record the exact w
 
 Permit bounded peer hand-offs through the verified channel. The Chief owns sequencing, ship authorization, and risk; workers copy it on scope/dependency changes. Rediscover addresses after resume and confirm acknowledgements; neither delivery nor idle proves completion.
 
-Use the available native artifact-review channel. Respect pending human input and approval dialogs through the native interface.
+Respect pending human input and approval dialogs through the native interface.
+
+## Red-tier review
+
+Green and yellow work merges without human review. For red work, prepare the review before asking for attention:
+
+1. Have the worker write an annotated walkthrough: intent, each changed file in reading order with what changed and why, risks, and what the reviewer should verify, linked to the PR diff.
+2. If the Artifact tool is available, publish the walkthrough as a private review page and give the human its link with the PR URL. Otherwise post it as a PR comment. When hosted in Herdr, use the Hunk split in `herdr.md` instead.
+3. Keep secrets and customer data out of the walkthrough. Collect feedback, route it to the worker, refresh the walkthrough after each revision, and merge only after explicit approval of the current head.
 
 ## Recurring check-ins and PR monitoring
 

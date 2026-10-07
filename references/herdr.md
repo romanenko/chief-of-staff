@@ -77,7 +77,7 @@ herdr plugin action invoke merge --plugin worktrunk
 herdr plugin action invoke merge-no-squash --plugin worktrunk
 ```
 
-Inspect the manifest/action list before use. Merge actions run `wt merge` and removal; the no-squash variant preserves commits. They are **not** substitutes for PR protections, current-head checks, or merge authorization. Do not invoke merge merely to clean up an already merged PR. Stop the worker and owned processes before removal, verify the selected checkout, and never accept destructive prompts on the user's behalf without delegated authority. Worktrunk confirmation is not permission to discard unknown work.
+Inspect the manifest/action list before use. Merge actions run `wt merge` and removal; the no-squash variant preserves commits. They are **not** substitutes for PR protections, current-head checks, or the risk route in `operations.md`. Do not invoke merge merely to clean up an already merged PR. Stop the worker and owned processes before removal, verify the selected checkout, and never accept destructive prompts on the user's behalf without delegated authority. Worktrunk confirmation is not permission to discard unknown work.
 
 The plugin closes associated native workspaces or legacy tab panes after successful removal; failed merge/removal retains work and UI. Verify hook results, checkout/branch disposition, and UI cleanup before declaring completion. Do not redundantly close a space already removed by the plugin. Never use `workspace close --group`: it can affect the Chief and siblings. Reused resources require explicit management authority.
 
@@ -85,19 +85,19 @@ On recovery, reconcile Worktrunk checkouts, grouped spaces, workers, and partial
 
 ## Hunk review and annotations
 
-Hunk is optional review tooling within this hosted workflow. If unavailable, use an approved alternative that meets the same review/approval requirements; do not weaken those requirements.
+Hosted, red-tier work is reviewed here: the Chief opens a Hunk split beside the worker with the worker's annotated walkthrough and asks the human for attention. Green and yellow work needs no hosted review unless the human asks for one. If Hunk is unavailable, use an approved alternative that meets the same review/approval requirements; do not weaken those requirements.
 
 For a Git working-state review:
 
 1. Split beside the worker with `herdr pane split --pane <agent-pane> --direction right --cwd <path> --no-focus`, adapting geometry to the actual layout. Read the new pane ID.
 2. Start `hunk diff HEAD` in that pane via `herdr pane run`. Including `HEAD` shows staged and unstaged changes. Discover the live review with `hunk session list` and target its exact ID if ambiguous.
-3. Apply assignment notes with `hunk session comment apply --repo <path> --stdin`. Notes may be stored in git-excluded `.hunk-notes.json`:
+3. Have the worker write walkthrough notes that explain the change in reading order: intent, how each hunk achieves it, risks, and what to verify. Apply them with `hunk session comment apply --repo <path> --stdin`. Notes may be stored in git-excluded `.hunk-notes.json`:
 
 ```json
 {"comments":[{"filePath":"src/example.ts","newLine":42,"summary":"What changed.","rationale":"Intent, risks, and what to verify.","author":"worker"}]}
 ```
 
-4. Add Chief findings through the session CLI and report decisions required. Focus the review only when requested.
+4. Add Chief findings and the risk rationale through the session CLI, then tell the human the review is ready, with the tier, pane location, and decisions required. Focus the review only when requested. Merge only after explicit approval of the reviewed head.
 5. For revisions, have the worker read `hunk session comment list --repo <path> --type user`, make changes or reply in-thread, re-run verification, and report completion.
 6. Refresh the live view from current files using the installed reload interface. Preserve annotations first; inspect all comments before replacing notes, avoid duplicate application, and never remove a note that parents a human reply. Do not clear human comments or restart the daemon without approval.
 

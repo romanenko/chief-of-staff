@@ -1,6 +1,6 @@
 # Operational procedures
 
-Use this reference for isolated execution, artifact review, risk assessment, shipping, and dependency safeguards. Follow the target repository's documented commands and conventions; never assume a particular application, package manager, model, or issue tracker.
+Use this reference for isolated execution, artifact review, risk assessment and routing, shipping, and dependency safeguards. Follow the target repository's documented commands and conventions; never assume a particular application, package manager, model, or issue tracker.
 
 ## Isolated execution and assignment
 
@@ -11,7 +11,8 @@ Send a self-contained spec with:
 - Outcome, acceptance criteria, allowed scope, and dependencies.
 - Working path/branch, relevant files, and required project instructions.
 - Exact verification commands, expected evidence, and review channel.
-- Progress/report format, escalation path, and ship/merge approval gates.
+- Preliminary risk tier, its rationale, and the escalation triggers that would raise it.
+- Progress/report format, escalation path, and the merge route that follows from the tier.
 
 Keep disposable notes, screenshots, scripts, and logs in an assignment-owned, git-excluded location. Use the repository's documented setup and verification commands. Revert only known temporary changes; never overwrite unrelated edits. End verification with a status check showing only intended changes.
 
@@ -19,20 +20,26 @@ Review the actual diff and test evidence. Explain real problems and required cor
 
 ## Shipping and acceptance
 
-Shipping requires explicit authorization or an established delegation policy. Workers perform commit, push, and PR mechanics; the Chief verifies the artifact and owns acceptance.
+Assigning work to the Chief authorizes shipping it under the risk routing below, unless the user or repository sets a stricter policy. Workers perform commit, push, and PR mechanics; the Chief verifies the artifact and owns acceptance.
 
 1. Specify intended files, commit/PR conventions, target branch, relevant issue links if required, and truthful runtime/model attribution where applicable. Never invent an identity or commit disposable review artifacts.
 2. Run commit, push, and PR creation as separately inspectable steps. Respect permission denials; do not perform a denied operation through another session.
 3. Verify the commit, clean working state, PR diff, target branch, metadata, and required verification. Route discrepancies to the worker before reporting readiness.
-4. Assess risk and follow [the shared lifecycle](coordination.md) for comments, reviews, CI, revisions, authorized merge, and cleanup.
+4. Confirm the final risk tier and follow [the shared lifecycle](coordination.md) for comments, reviews, CI, revisions, merge, and cleanup.
 
-Merge only within explicit authorization and repository protections. High-risk changes require explicit human approval of the current artifact, even when a broader batch authorization exists. Deployment/release authority is separate from merge authority; do not infer it.
+Merge according to the risk route and within repository protections. Green and yellow work merges without human review. Red work requires explicit human approval of the current artifact, even when a broader batch authorization exists. Deployment/release authority is separate from merge authority; do not infer it.
 
 Confirmed merge or explicit rejection starts cleanup. Remove only assignment-owned resources, preserve essential evidence, check dependencies before deleting branches, and report blockers instead of forcing disposal.
 
 ## Risk assessment
 
-The Chief assesses the actual diff and verification evidence. In Pi, use codemode with TypeSafe/Jev classifiers whenever appropriate, as described in `pi.md`; validate the result and own the final decision.
+Risk is assessed twice by the Chief and continuously by the worker:
+
+1. **Preliminary tier (before delegation).** From the outcome, expected files and surfaces, dependencies, and rollback path, the Chief assigns a tier and lists the triggers that would raise it (for example, touching auth, payments, schemas, or customer data). The tier and triggers go in the spec, so the worker knows from the hand-off whether the change is low risk.
+2. **Worker flag (during implementation).** The worker checks its own work against the assigned tier and triggers. If the work hits a trigger or otherwise looks riskier than assigned, it reports a risk flag to the Chief immediately with the evidence, before continuing past that point. A worker can raise the tier but never lower it.
+3. **Final tier (before merge).** The Chief assesses the actual diff and verification evidence. The final tier is never lower than the preliminary tier or any accepted worker flag unless the Chief records why the earlier concern does not apply.
+
+In Pi, the Chief and Pi workers make these assessments with codemode and the TypeSafe Jev classifier, as described in `pi.md`. Every Harness uses the same rubric and routing.
 
 Use the repository's rubric when provided. Otherwise use these general categories:
 
@@ -44,7 +51,16 @@ Assess worst plausible harm and blast radius, not just file count or a passing s
 
 Record the category, affected paths, plausible failure/cost, tests and mitigations, remaining uncertainty, rollback considerations, and concrete post-change signals. If classifier-assisted, record the provider/model, criteria, proposed result, and Chief's final decision. Do not claim a classifier ran when it did not.
 
-Use existing repository labels/comment formats where available. Do not impose a foreign scoring workflow or create labels without authority. Reassess material changes, validate readiness against the current head, and obtain renewed approval when the reviewed artifact changes substantially.
+Use existing repository labels/comment formats where available. Do not impose a foreign scoring workflow or create labels without authority. Reassess material changes, validate readiness against the current head, and re-route when the tier changes.
+
+## Risk routing
+
+| Final tier | Route |
+| --- | --- |
+| Green / yellow | Merge without human review once current-head required checks pass, actionable feedback is resolved, and repository protections are satisfied. Report the merge with its tier and rationale. |
+| Red | Do not merge. Have the worker write an annotated walkthrough of the change, prepare the review through the Harness's review channel (Herdr/Hunk split when hosted; otherwise the channel in the Harness reference), and ask the human for attention. Merge only after explicit approval of the current head; renew approval if the head changes materially. |
+
+If repository protections require a human approval the Chief cannot supply, report the PR as awaiting required approval; never bypass protections. The walkthrough explains intent, how each change achieves it, risks, and what the reviewer should verify. Keep secrets and customer data out of review artifacts.
 
 ## Dependent PR safeguards
 

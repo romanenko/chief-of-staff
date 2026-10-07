@@ -6,6 +6,8 @@ Use this reference when the Chief runs in the Pi harness, irrespective of its mo
 
 - [Capability checks and worker launch](#capability-checks-and-worker-launch)
 - [Codemode and TypeSafe/Jev classifiers](#codemode-and-typesafejev-classifiers)
+- [Risk assessment with codemode and Jev](#risk-assessment-with-codemode-and-jev)
+- [Red-tier review](#red-tier-review)
 - [Direct communication](#direct-communication)
 - [One managed check-in process per worker](#one-managed-check-in-process-per-worker)
 - [PR monitor](#pr-monitor)
@@ -33,9 +35,21 @@ Read the installed Pi codemode/model documentation before using its APIs. Prefer
 
 ### Bounded judgment and routing
 
-Use TypeSafe/Jev through codemode for judgment that fits typed questions: risk category, urgency, feedback ownership, or choosing the best eligible next step from a finite set. Define explicit labels and criteria; provide the actual diff, tests, dependencies, and approval state as relevant evidence. Apply deterministic eligibility/permission checks first so prohibited actions are not candidates.
+Use TypeSafe/Jev through codemode for judgment that fits typed questions: risk tier (see the next section), urgency, feedback ownership, or choosing the best eligible next step from a finite set. Define explicit labels and criteria; provide the actual diff, tests, dependencies, and approval state as relevant evidence. Apply deterministic eligibility/permission checks first so prohibited actions are not candidates.
 
-Discover usable models with `models.getAvailableOfType("classifier")` and select a TypeSafe/Jev entry. Provider and model IDs vary; do not assume credentials or hardcode an unavailable ID. Then call `models.classify(model, { state, questions })`, using `choice`, `bool`, or `score` questions. For example, after collecting evidence:
+## Risk assessment with codemode and Jev
+
+In Pi, risk assessment **is** a codemode script that sends collected evidence to Jev, the TypeSafe.ai classifier model, and validates its answer. Run it at both assessment points in `operations.md`:
+
+| Stage | Who runs it | Evidence passed to Jev |
+| --- | --- | --- |
+| Preliminary tier | Chief, before delegation | Outcome, acceptance criteria, expected files and surfaces, dependencies, rollback path. |
+| Worker check | Pi worker, at each milestone and before reporting local-review readiness | Its current diff, test results, the assigned tier, and the escalation triggers from the spec. |
+| Final tier | Chief, before merge | Actual PR diff at the current head, verification evidence, and any worker flags. |
+
+Use the same criteria at every stage so the tiers are comparable. A worker whose Jev result is higher than its assigned tier, or that hits a listed trigger, sends a risk flag to the Chief with the classifier result and evidence before continuing. A worker never lowers its tier on a classifier result. For a non-Pi worker under a Pi Chief, the Chief runs the worker-check stage on that worker's reported diff.
+
+Discover usable models with `models.getAvailableOfType("classifier")` and select the TypeSafe Jev entry. Provider and model IDs vary; do not assume credentials or hardcode an unavailable ID. Then call `models.classify(model, { state, questions })`, using `choice`, `bool`, or `score` questions. For example:
 
 ```js
 const available = await models.getAvailableOfType("classifier");
@@ -44,10 +58,11 @@ const jev = available.find(m =>
 ) ?? available.find(m => /jev/i.test(m.id));
 if (!jev) return { status: "classifier-unavailable", next: "Chief assessment" };
 
-const evidence = load("riskEvidence"); // collected diff/test evidence, not a PR-title guess
-if (!evidence) return { status: "missing-evidence", next: "Collect diff and tests" };
+// stage: "preliminary" | "worker-check" | "final"; evidence matches the stage table above
+const { stage, evidence, assignedTier, triggers } = load("riskInput");
+if (!evidence) return { status: "missing-evidence", next: "Collect evidence for " + stage };
 const result = await models.classify(jev, {
-  state: evidence,
+  state: { stage, evidence, assignedTier, triggers },
   questions: {
     risk: {
       type: "choice",
@@ -57,17 +72,25 @@ const result = await models.classify(jev, {
         yellow: "Bounded plausible harm on checkout, attribution, messaging, third-party data, or auth.",
         red: "Wide/material harm, schema migration, or unflagged change affecting every visitor."
       }
+    },
+    triggerHit: {
+      type: "bool",
+      instructions: "Does the evidence touch any listed escalation trigger?"
     }
   }
 });
 if (result.stopReason !== "stop")
   return { status: result.stopReason, error: result.errorMessage };
-return { provider: result.provider, model: result.model, risk: result.answers.risk };
+return { stage, provider: result.provider, model: result.model, ...result.answers };
 ```
 
-Validate answer type, allowed label, confidence/probabilities, and evidence before using a result. Record classifier/model, criteria, result, and the Chief's decision in the thread registry. For routine eligible routing, a validated choice may select the next path; for risk assessment, the Chief checks it against the full rubric in `operations.md` and owns the final label/rationale. Classification is not human approval or permission to merge, delete, or expand scope.
+Validate answer type, allowed label, confidence/probabilities, and evidence before using a result. Record stage, classifier/model, criteria, result, and the decision in the thread registry. For routine eligible routing, a validated choice may select the next path. For the preliminary and final tiers, the Chief checks the result against the full rubric in `operations.md` and owns the final label and rationale. Classification is not human approval or permission to merge, delete, or expand scope.
 
-On absent credentials, service errors, ambiguous/low-confidence output, or insufficient evidence, collect more evidence or have the Chief decide/escalate explicitly. Never silently classify an error as green or claim a classifier ran when it did not. Keep sensitive material out of classifier inputs unless its use with that provider is authorized.
+On absent credentials, service errors, ambiguous/low-confidence output, or insufficient evidence, collect more evidence or have the Chief decide/escalate explicitly. Never silently classify an error as green or claim a classifier ran when it did not. Keep secrets and customer data out of classifier inputs unless their use with that provider is authorized.
+
+## Red-tier review
+
+Green and yellow work merges without human review. For red work, have the worker write an annotated walkthrough (intent, each changed file in reading order, risks, what to verify). When hosted in Herdr, present it in the Hunk split described in `herdr.md`. Otherwise post it as a PR comment and send the human its link. Include the Jev result and the Chief's rationale, and merge only after explicit approval of the current head.
 
 ## Direct communication
 

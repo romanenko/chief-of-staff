@@ -18,6 +18,10 @@ Message delivery is not acknowledgement. Track explicit responses and deadlines.
 
 For mixed-runtime workers, read their runtime reference too and verify a bridge/adapter. Pi intercom cannot address a Codex session just because it is on the same machine. Do not invent direct peer messaging where no channel exists; relay bounded hand-offs through the Chief instead.
 
+## Red-tier review
+
+Green and yellow work merges without human review. For red work, have the worker write an annotated walkthrough (intent, each changed file in reading order, risks, what to verify) and deliver it through the installed native Codex review interface if one exists; otherwise post it as a PR comment. When hosted in Herdr, use the Hunk split in `herdr.md`. Ask the human for attention and merge only after explicit approval of the current head.
+
 ## Check-ins and PR monitoring
 
 Use the installed, documented Codex background-task/scheduler or approved integration to create one separately identified recurring check-in task per supervised session. Follow the registry, response deadlines, and GitHub event/cursor requirements in `coordination.md`. Maintain PR monitoring and keep workers available for revisions until verified merge to trunk or explicit rejection.

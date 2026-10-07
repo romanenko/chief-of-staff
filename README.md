@@ -20,8 +20,8 @@ For other Harnesses, follow their installed skill-loading interface. Do not assu
 
 - [Main skill](SKILL.md): brief coordination pattern and worker-thread lifecycle.
 - [Shared lifecycle](references/coordination.md): registry, recurring check-ins, PR/CI supervision, recovery, and disposal.
-- [Operations](references/operations.md): isolated execution, risk assessment, approval policy, and dependent PR safeguards.
-- [Pi](references/pi.md): intercom, managed background processes, codemode composition/parallelism, and TypeSafe/Jev classification.
+- [Operations](references/operations.md): isolated execution, risk assessment and routing (green/yellow merge without human review; red gets a prepared human review), and dependent PR safeguards.
+- [Pi](references/pi.md): intercom, managed background processes, codemode composition/parallelism, and risk assessment with the TypeSafe Jev classifier.
 - [Claude](references/claude.md): capability-aware native delegation, messaging, and lifecycle controls.
 - [Codex](references/codex.md): capability-aware native delegation, messaging, and lifecycle controls.
 - [gh-observer](references/gh-observer.md): optional terminal/PTY PR and Actions watcher, supervisor requirements, current-head verification, and coverage limits; use when available, with or without Herdr.
@@ -31,7 +31,7 @@ For other Harnesses, follow their installed skill-loading interface. Do not assu
 
 Use the target repository's documented setup, checks, and conventions. Choose approved models and preserve permissions; this skill imposes no fixed model, company, application, or package-manager configuration.
 
-For Pi, load the installed `pi-intercom` and `pi-processes` integrations and enable `codemode` where supported. Use codemode and TypeSafe/Jev classifiers whenever appropriate to compose tool calls and make evidence-backed, finite-choice judgments. Classifiers do not grant merge or deletion permission.
+For Pi, load the installed `pi-intercom` and `pi-processes` integrations and enable `codemode` where supported. Use codemode and TypeSafe/Jev classifiers whenever appropriate to compose tool calls and make evidence-backed, finite-choice judgments. In Pi, risk tiers are assessed with codemode and Jev, both at preliminary assignment and in worker checks. Classifiers do not grant merge or deletion permission.
 
 Every supervised worker needs a separately tracked recurring check-in task. PR supervision continues through revisions until verified merge or explicit rejection. PR creation, idle workers, and passing CI are not acceptance by themselves.
 
