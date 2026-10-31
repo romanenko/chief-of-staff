@@ -6,15 +6,28 @@ The workflow is Harness-neutral. Pi, Claude, and Codex have separate communicati
 
 ## Install
 
-Copy `SKILL.md` and the entire `references/` directory into the skill location supported by your Harness. Do not copy Git metadata or install individual reference files without the main skill.
+```sh
+npx skills add romanenko/chief-of-staff
+```
 
-For Pi, use a skill directory such as `~/.agents/skills/chief-of-staff/`, reload the session, and invoke:
+Follow the prompts to choose your agent and installation scope, then reload or start a new agent session.
+
+## Usage
+
+Ask your agent to act as chief of staff and describe the assignments, boundaries, and expected outcomes. For example:
+
+```text
+Act as chief of staff. Coordinate these assignments in parallel, verify the
+results, and shepherd each change through review and integration.
+```
+
+In Pi, you can invoke the skill directly:
 
 ```text
 /skill:chief-of-staff Coordinate the following assignments…
 ```
 
-For other Harnesses, follow their installed skill-loading interface. Do not assume a model/provider name identifies the Harness.
+For other agents, use their supported skill invocation or ask for the chief-of-staff workflow in your prompt.
 
 ## Resources
 
