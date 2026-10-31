@@ -49,6 +49,8 @@ In Pi, risk assessment **is** a codemode script that sends collected evidence to
 
 Use the same criteria at every stage so the tiers are comparable. A worker whose Jev result is higher than its assigned tier, or that hits a listed trigger, sends a risk flag to the Chief with the classifier result and evidence before continuing. A worker never lowers its tier on a classifier result. For a non-Pi worker under a Pi Chief, the Chief runs the worker-check stage on that worker's reported diff.
 
+Keep criteria verbatim with the general rubric in `operations.md`, as below; when the repository provides its own rubric, use that rubric instead at every stage.
+
 Discover usable models with `models.getAvailableOfType("classifier")` and select the TypeSafe Jev entry. Provider and model IDs vary; do not assume credentials or hardcode an unavailable ID. Then call `models.classify(model, { state, questions })`, using `choice`, `bool`, or `score` questions. For example:
 
 ```js
@@ -68,9 +70,9 @@ const result = await models.classify(jev, {
       type: "choice",
       instructions: "Assess worst plausible business harm using these criteria; choose the higher category when uncertain.",
       criteria: {
-        green: "Negligible harm; no customer, revenue, auth, or sensitive-data path.",
-        yellow: "Bounded plausible harm on checkout, attribution, messaging, third-party data, or auth.",
-        red: "Wide/material harm, schema migration, or unflagged change affecting every visitor."
+        green: "negligible plausible harm, such as bounded documentation, test, or internal tooling changes with no sensitive execution path affected.",
+        yellow: "bounded plausible harm involving authentication, payments, sensitive data, external integrations, or user-facing behavior.",
+        red: "material or broad harm, destructive/schema changes, difficult rollback, or wide impact without effective safeguards."
       }
     },
     triggerHit: {
