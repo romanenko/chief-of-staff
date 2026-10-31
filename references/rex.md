@@ -140,14 +140,14 @@ Red-tier work requires the worker's walkthrough, the Chief's risk rationale, the
 
 Use the Harness/PR review channel by default. Only open a terminal review viewer when the human requests that presentation. The connected server may offer only terminal blocks: inspect `rex block types --json` before promising a built-in diff viewer. A plain Git diff is useful presentation, not an annotation system. For committed work, review the actual base-to-head diff; `git diff HEAD` only shows tracked working-state changes and is empty in a clean committed checkout.
 
-Hunk is strictly opt-in: use it only when the human explicitly requests Hunk. Availability, Rex hosting, a red risk tier, or a generic request for review does not select it. Do not launch Hunk, attach to a live Hunk session, or modify its notes without that request. When requested, read the skill returned by `hunk skill path` and installed help. If that skill requires the human to start its TUI, ask them to do so; do not bypass its launch restrictions. Where the installed integration permits agent-created review terminals, the Rex layout command is:
+Hunk is strictly opt-in: use it only when the human explicitly requests Hunk. Availability, Rex hosting, a red risk tier, or a generic request for review does not select it. Do not launch Hunk, attach to a live Hunk session, or modify its notes without that request. When requested, read the skill returned by `hunk skill path` and installed help. If that skill requires the human to start its TUI, ask them to do so; do not bypass its launch restrictions. Where the installed integration permits agent-created review terminals, verify `$base` and `$head` identify the intended review range before launching:
 
 ```sh
 rex split -s "$target_session" -b "$worker_block" --split=right --ratio 50 \
-  -c "$worktree_path" --focus=false --json -- hunk diff HEAD
+  -c "$worktree_path" --focus=false --json -- hunk diff "$base"..."$head"
 ```
 
-Use the verified base-to-head revision range instead for committed changes. Save the new `.block_ids[0]` (the split result also includes the original block), discover the Hunk session separately with `hunk session list`, and use its exact ID when ambiguous. Never confuse a Hunk review-session ID with a Rex session ID.
+Save the new `.block_ids[0]` (the split result also includes the original block), discover the Hunk session separately with `hunk session list`, and use its exact ID when ambiguous. Never confuse a Hunk review-session ID with a Rex session ID.
 
 Have the worker apply walkthrough notes using the installed Hunk session CLI, read human comments, address feedback, and refresh the review after revisions. For example, verified versions support `hunk session comment apply REVIEW_ID --stdin`, `hunk session comment list REVIEW_ID --type user`, and `hunk session reload REVIEW_ID -- diff BASE...HEAD`. Preserve all human comments and replies; inspect before replacing notes, avoid duplicate application, and never clear a parent of a human reply. Agent notes may be hidden until the user presses `a`; tell them rather than stealing focus. Keep notes git-excluded, retain approval evidence, and renew approval for material head changes.
 
