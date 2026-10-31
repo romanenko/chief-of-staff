@@ -58,7 +58,7 @@ Use existing repository labels/comment formats where available. Do not impose a 
 | Final tier | Route |
 | --- | --- |
 | Green / yellow | Merge without human review once current-head required checks pass, actionable feedback is resolved, and repository protections are satisfied. Report the merge with its tier and rationale. |
-| Red | Do not merge. Have the worker write an annotated walkthrough of the change, prepare the review through the Harness's review channel (Herdr/Hunk split when hosted; otherwise the channel in the Harness reference), and ask the human for attention. Merge only after explicit approval of the current head; renew approval if the head changes materially. |
+| Red | Do not merge. Have the worker write an annotated walkthrough of the change, prepare the review through the Harness's review channel (Rex review pane or Harness/PR channel per `rex.md` when using Rex; otherwise the channel in the Harness reference), and ask the human for attention. Merge only after explicit approval of the current head; renew approval if the head changes materially. |
 
 If repository protections require a human approval the Chief cannot supply, report the PR as awaiting required approval; never bypass protections. The walkthrough explains intent, how each change achieves it, risks, and what the reviewer should verify. Keep secrets and customer data out of review artifacts.
 

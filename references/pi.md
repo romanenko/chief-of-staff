@@ -17,7 +17,7 @@ Use this reference when the Chief runs in the Pi harness, irrespective of its mo
 
 Read the installed `pi-intercom` and `pi-processes` skills before use. Verify `intercom({ action: "status" })`, discover peers with `intercom({ action: "list" })`, and inspect managed processes with `process({ action: "list" })`.
 
-Launch Pi workers in isolated working state via a supported Pi delegation/session interface. Select the user-approved model/provider and respect its permissions. Confirm cwd, branch, and intercom registration before delegation. Name the Chief and workers distinctly with `/alias` through the supported session interface.
+Launch Pi workers in isolated working state via a supported Pi delegation/session interface. Select the user-approved model/provider and respect its permissions. With Rex, launch explicitly in an assignment tab per `rex.md`, then discover the new intercom peer; never enable `openProjectPaneIfMissing`, which is not a Rex launcher. Keep the Rex session/window/block IDs distinct from the Pi peer ID. Confirm cwd, branch, and intercom registration before delegation. Name the Chief and workers distinctly with `/alias` through the supported session interface.
 
 Pi intercom reaches registered Pi sessions, not arbitrary Claude or Codex sessions. For a mixed-runtime worker, load that worker's reference too and verify a supported communication bridge. Report unsupported direct messaging rather than claiming delivery.
 
@@ -90,7 +90,7 @@ On absent credentials, service errors, ambiguous/low-confidence output, or insuf
 
 ## Red-tier review
 
-Green and yellow work merges without human review. For red work, have the worker write an annotated walkthrough (intent, each changed file in reading order, risks, what to verify). When hosted in Herdr, present it in the Hunk split described in `herdr.md`. Otherwise post it as a PR comment and send the human its link. Include the Jev result and the Chief's rationale, and merge only after explicit approval of the current head.
+Green and yellow work merges without human review. For red work, have the worker write an annotated walkthrough (intent, each changed file in reading order, risks, what to verify). When using Rex, follow the annotated review workflow in `rex.md` (Harness/PR walkthrough by default; Hunk only on explicit human request). Otherwise post it as a PR comment and send the human its link. Include the Jev result and the Chief's rationale, and merge only after explicit approval of the current head.
 
 ## Direct communication
 

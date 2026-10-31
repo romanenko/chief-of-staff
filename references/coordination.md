@@ -8,6 +8,7 @@ Maintain durable coordinator state outside disposable worker worktrees, in a use
 
 - Task ID, scope, acceptance criteria, preliminary risk tier and escalation triggers, runtime/model, and worker identity/address.
 - Repository, working path/branch/base, and ownership of each resource.
+- When using Rex: server endpoint/instance, project session ID, assignment window ID, worker/review block IDs, and ownership at each level. Keep native worker addresses and review-session IDs separate; a reused project session is not disposable.
 - Check-in task/process ID, interval, response deadline, last request/response, milestone, verification evidence, blocker, and next action.
 - PR repository/number/URL, current head, monitor ID, seen event IDs/update timestamps, review/CI state, worker risk flags, final risk tier and route, human-review resources and approval, and stack dependencies.
 - Disposition evidence, cleanup checklist, resources retained, and unresolved blockers.

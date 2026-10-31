@@ -1,6 +1,6 @@
 # GitHub PR and Actions watching with gh-observer
 
-Use this optional reference when `gh observer` is available and PR checks or Actions runs need watching. It works with any Harness that can supervise a real terminal/PTY; it does not require Herdr. Keep communication and lifecycle controls in the matching Harness reference.
+Use this optional reference when `gh observer` is available and PR checks or Actions runs need watching. It works with any Harness that can supervise a real terminal/PTY; it does not require Rex. Keep communication and lifecycle controls in the matching Harness reference.
 
 This protocol restores the observer guidance from chief-of-staff commit `f67c4d0`, removed during the Harness-neutral cleanup in `b34b5b6`. Behavior below was checked against upstream [v4.1 README](https://github.com/fini-net/gh-observer/blob/v4.1/README.md) and [entry point](https://github.com/fini-net/gh-observer/blob/v4.1/main.go). Check installed help/source after upgrades.
 

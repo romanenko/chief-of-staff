@@ -4,7 +4,7 @@ Use this reference for Claude, Claude Code, or Claude CLI, irrespective of the m
 
 ## Launch and model policy
 
-Discover native delegation/session controls and confirm worker identity, working state, and readiness. Select models and worker roles from the user's approved configuration; do not impose fixed model preferences. If a configured model is unavailable, ask rather than silently substitute or weaken permissions. Use only launch flags documented for the installed native interface.
+Discover native delegation/session controls and confirm worker identity, working state, and readiness. Select models and worker roles from the user's approved configuration; do not impose fixed model preferences. If a configured model is unavailable, ask rather than silently substitute or weaken permissions. Use only launch flags documented for the installed native interface. With Rex, use an explicit assignment tab per `rex.md`; a running Claude CLI in a block is not automatically reachable by native child-agent messaging. Verify the channel or approved terminal bridge before delegation.
 
 ## Talking to agents
 
@@ -21,7 +21,7 @@ Respect pending human input and approval dialogs through the native interface.
 Green and yellow work merges without human review. For red work, prepare the review before asking for attention:
 
 1. Have the worker write an annotated walkthrough: intent, each changed file in reading order with what changed and why, risks, and what the reviewer should verify, linked to the PR diff.
-2. If the Artifact tool is available, publish the walkthrough as a private review page and give the human its link with the PR URL. Otherwise post it as a PR comment. When hosted in Herdr, use the Hunk split in `herdr.md` instead.
+2. If the Artifact tool is available, publish the walkthrough as a private review page and give the human its link with the PR URL. Otherwise post it as a PR comment. When using Rex, retain this Artifact/PR channel by default. Use Hunk only on explicit human request, following `rex.md`.
 3. Keep secrets and customer data out of the walkthrough. Collect feedback, route it to the worker, refresh the walkthrough after each revision, and merge only after explicit approval of the current head.
 
 ## Recurring check-ins and PR monitoring

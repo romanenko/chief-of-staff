@@ -23,9 +23,11 @@ Keep the Chief in the coordinating thread. Delegate implementation—including s
 
 On resume or failure, reconcile recorded state with live Harness sessions and artifact state before acting. Never bypass permissions, discard unknown work, or dispose of another thread's resources. If a required capability is absent, surface the blocker instead of claiming supervision is active.
 
-## Hosting check
+## Rex terminal coordination
 
-Detect Herdr with `test "${HERDR_ENV:-}" = 1`. Only on success, read [Herdr coordination](references/herdr.md); its Herdr and Hunk workflows are hosted-only. Otherwise—including pure Claude, Claude Code/CLI, Codex CLI, or desktop apps—ignore those workflows and use native Harness tools. If shell/environment access is unavailable, treat hosting as unconfirmed and skip them. Hosting is independent of Harness or model identity.
+When `REX_SESSION` / `REX_BLOCK` identify the caller, or the user requests Rex control from outside it, read [Rex coordination](references/rex.md). Validate the connection and live IDs with `rex whoami --json` and explicit inspection before acting. Rex supports external callers: discover the authorized target or ask when ambiguous; never substitute the user's focused pane for the Chief's identity. Without Rex access or an authorized target, use native Harness tools. Hosting is independent of Harness or model identity.
+
+Rex supplies project sessions, assignment tabs, worker/review panes, and terminal events. Worktrunk manages isolated checkouts directly; native Harness channels carry worker messages and wake-ups. Follow the Rex reference for focus, ownership, review, and cleanup—layout creation is neither worktree setup nor active supervision. Review through the Harness/PR channel by default; use Hunk only when the human explicitly requests it.
 
 ## References
 
@@ -37,6 +39,6 @@ Choose by the Chief's **Harness**, not its model/provider; read the matching com
 
 For mixed-Harness workers, read their reference too and verify the bridge.
 
-For terminal-based PR/Actions watching, consult [gh-observer](references/gh-observer.md) when the extension is available. It is optional and independent of Herdr; verify PTY supervision and supplement its CI-only coverage with the shared PR-event monitoring contract.
+For terminal-based PR/Actions watching, consult [gh-observer](references/gh-observer.md) when the extension is available. It is optional and independent of Rex; verify PTY supervision and supplement its CI-only coverage with the shared PR-event monitoring contract.
 
 Read [coordination details](references/coordination.md) for registry, check-in, PR-monitoring, recovery, and cleanup specifics. Consult [operational procedures](references/operations.md) before applicable setup, review, shipping, or disposal actions; it contains generic execution safeguards, risk assessment and routing, approval policy, and dependency handling. Resolve references relative to this skill directory.

@@ -24,8 +24,8 @@ For other Harnesses, follow their installed skill-loading interface. Do not assu
 - [Pi](references/pi.md): intercom, managed background processes, codemode composition/parallelism, and risk assessment with the TypeSafe Jev classifier.
 - [Claude](references/claude.md): capability-aware native delegation, messaging, and lifecycle controls.
 - [Codex](references/codex.md): capability-aware native delegation, messaging, and lifecycle controls.
-- [gh-observer](references/gh-observer.md): optional terminal/PTY PR and Actions watcher, supervisor requirements, current-head verification, and coverage limits; use when available, with or without Herdr.
-- [Terminal hosting](references/herdr.md): optional hosted coordination and annotated review, loaded only when the main skill's hosting check succeeds.
+- [gh-observer](references/gh-observer.md): optional terminal/PTY PR and Actions watcher, supervisor requirements, current-head verification, and coverage limits; use when available, with or without Rex.
+- [Rex coordination](references/rex.md): live target discovery, project sessions and assignment tabs, direct Worktrunk lifecycle, native worker launch/messaging, terminal events, annotated review, and ownership-safe cleanup. Supports both hosted and explicitly targeted external callers.
 
 ## Capabilities and limits
 
@@ -36,5 +36,9 @@ For Pi, load the installed `pi-intercom` and `pi-processes` integrations and ena
 Every supervised worker needs a separately tracked recurring check-in task. PR supervision continues through revisions until verified merge or explicit rejection. PR creation, idle workers, and passing CI are not acceptance by themselves.
 
 The skill defines monitoring behavior; it does not bundle an executable scheduler or GitHub monitor. Verify the chosen implementation can collect all relevant events and wake the Chief. If the Harness lacks a required capability, surface the gap rather than claiming autonomous supervision is active. Background work is not automatically durable across process exit, machine sleep, or restart.
+
+Rex is optional for native CLI and desktop environments. When used, it hosts terminals rather than replacing the agent Harness. Use one project session with named assignment tabs; worktree identity and isolation come from Worktrunk/Git, not terminal nesting. Hunk is strictly opt-in: use it only when the human explicitly requests Hunk. Default to the Harness/PR walkthrough; neither Rex hosting nor red-tier work automatically opens Hunk.
+
+Rex event streams and program-status indicators provide observation, not an agent broker, recurring scheduler, or full GitHub monitor. Keep those responsibilities in the verified Harness integrations. Do not use host-specific messaging auto-launchers: launch workers explicitly with Rex, then discover their native addresses.
 
 Native CLI and desktop environments do not require hosted terminal workflows. Use only installed, documented interfaces; never invent cross-session messaging or substitute a permission-bypassing adapter.

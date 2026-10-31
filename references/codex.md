@@ -6,7 +6,7 @@ Use this reference when the Chief runs in the Codex harness, not merely when ano
 
 Inspect the installed native Codex tools and documentation/help. Use only supported agent launch, messaging, resume, background execution, and shutdown interfaces. Do not assume Claude's `ListAgents`/`SendMessage`, Pi's `intercom`/`process`, or a particular Codex multi-agent API exists.
 
-Launch each implementation worker in isolated working state using the verified native Codex adapter/CLI. Select the user-approved model and preserve configured approval/sandbox rules; never substitute bypass flags for a missing capability. Confirm worker identity, cwd, branch, and readiness before delegation.
+Launch each implementation worker in isolated working state using the verified native Codex adapter/CLI. Select the user-approved model and preserve configured approval/sandbox rules; never substitute bypass flags for a missing capability. With Rex, launch in an explicit assignment tab per `rex.md` and verify the communication bridge separately; a Rex block ID is not a native Codex worker handle. Confirm worker identity, cwd, branch, and readiness before delegation.
 
 ## Communication adapter
 
@@ -20,7 +20,7 @@ For mixed-runtime workers, read their runtime reference too and verify a bridge/
 
 ## Red-tier review
 
-Green and yellow work merges without human review. For red work, have the worker write an annotated walkthrough (intent, each changed file in reading order, risks, what to verify) and deliver it through the installed native Codex review interface if one exists; otherwise post it as a PR comment. When hosted in Herdr, use the Hunk split in `herdr.md`. Ask the human for attention and merge only after explicit approval of the current head.
+Green and yellow work merges without human review. For red work, have the worker write an annotated walkthrough (intent, each changed file in reading order, risks, what to verify) and deliver it through the installed native Codex review interface if one exists; otherwise post it as a PR comment. When using Rex, retain the native/PR channel by default. Use Hunk only on explicit human request, following `rex.md`. Ask the human for attention and merge only after explicit approval of the current head.
 
 ## Check-ins and PR monitoring
 
